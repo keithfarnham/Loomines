@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://cmqc3gkj75ykv"
+path="res://.godot/imported/Not very cool or interesting_168bpm_96bars.wav-eb8f8b39c5980ef03ecce95a4a44a8ea.sample"
+
+[deps]
+
+source_file="res://audio/Not very cool or interesting_168bpm_96bars.wav"
+dest_files=["res://.godot/imported/Not very cool or interesting_168bpm_96bars.wav-eb8f8b39c5980ef03ecce95a4a44a8ea.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0
