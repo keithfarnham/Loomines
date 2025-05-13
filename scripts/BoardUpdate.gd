@@ -15,31 +15,31 @@ func falling_blocks_update(delta):
 				distanceToFall += 1
 				continue
 			
-			if BoardData.CellGrid[w][h].state == CellData.CellState.TO_FALL:
-				if distanceToFall == 0:
+			match(BoardData.CellGrid[w][h].state):
+				CellData.CellState.FALLING:
+					var gridIndex = Vector2(w, h)
+					print("[falling_blocks_update] cell at " + str(gridIndex) + " is falling, sprite y pos " + str(BoardData.CellGrid[w][h].sprite.position.y) + " and pixel to grid = " + str(BoardData.pixel_to_grid_pos( BoardData.CellGrid[w][h].sprite.position ).y) + " expecting >=" + str(gridIndex.y))
+					if BoardData.pixel_to_grid_pos( BoardData.CellGrid[w][h].sprite.position ).y >= gridIndex.y:
+						#sprite made it to landing place
+						BoardData.land_cell(gridIndex, BoardData.CellGrid[w][h].color)
+					else:
+						print("gridIndex " + str(gridIndex) + " is falling")
+						BoardData.CellGrid[w][h].sprite.position.y += delta * 720
+				CellData.CellState.TO_FALL:
+					if distanceToFall == 0:
 					print("[falling_blocks_update] ERROR distance to fall shouldn't be 0, this cell probably shouldn't be set to fall")
 					
-				if h + distanceToFall > BoardData.GRID_HEIGHT:
-					print("[falling_blocks_update] ERROR trying to make a block fall below the border, resetting distanceToFall to 0 in attempt to avoid problems")
-					distanceToFall = 0
-				#set FALLING state and copy cell data to target cell destination to handle sprite lerp
-				BoardData.set_state(Vector2i(w, h), CellData.CellState.FALLING)
-				BoardData.CellGrid[w][h + distanceToFall] = BoardData.CellGrid[w][h]
-				BoardData.CellGrid[w][h] = CellData.new()
-				print("[falling_blocks_update] Cell at " + str(Vector2i(w, h)) + " will fall to " + str(Vector2i(w, h + distanceToFall)))
-		
-			elif BoardData.CellGrid[w][h].state == CellData.CellState.FALLING:
-				var gridIndex = Vector2(w, h)
-				print("[falling_blocks_update] cell at " + str(gridIndex) + " is falling, sprite y pos " + str(BoardData.CellGrid[w][h].sprite.position.y) + " and pixel to grid = " + str(BoardData.pixel_to_grid_pos( BoardData.CellGrid[w][h].sprite.position ).y) + " expecting >=" + str(gridIndex.y))
-				if BoardData.pixel_to_grid_pos( BoardData.CellGrid[w][h].sprite.position ).y >= gridIndex.y:
-					#sprite made it to landing place
-					BoardData.land_cell(gridIndex, BoardData.CellGrid[w][h].color)
-				else:
-					print("gridIndex " + str(gridIndex) + " is falling")
-					BoardData.CellGrid[w][h].sprite.position.y += delta * 720
-			
-			else: #if cell isn't currently falling, check if it should fall
-				BoardData.cell_fall_scan(Vector2i(w, h))
+					if h + distanceToFall > BoardData.GRID_HEIGHT:
+						print("[falling_blocks_update] ERROR trying to make a block fall below the border, resetting distanceToFall to 0 in attempt to avoid problems")
+						distanceToFall = 0
+					#set FALLING state and copy cell data to target cell destination to handle sprite lerp
+					BoardData.set_state(Vector2i(w, h), CellData.CellState.FALLING)
+					BoardData.CellGrid[w][h + distanceToFall] = BoardData.CellGrid[w][h]
+					BoardData.CellGrid[w][h] = CellData.new()
+					print("[falling_blocks_update] Cell at " + str(Vector2i(w, h)) + " will fall to " + str(Vector2i(w, h + distanceToFall)))
+				Default:
+					#if cell isn't currently falling, check if it should fall
+					BoardData.cell_fall_scan(Vector2i(w, h))
 
 func matching_blocks_update(gridIndex : Vector2i):
 	if gridIndex.x == clearingLine.get_clear_cell():
@@ -107,4 +107,3 @@ func _process(delta):
 					clear_blocks_update(gridIndex)
 	if numOfCellsCleared > 0:
 		BoardData.score += numOfCellsCleared
-

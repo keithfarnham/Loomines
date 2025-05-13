@@ -1,10 +1,10 @@
 [gd_scene load_steps=6 format=3 uid="uid://bbh45es44o4og"]
 
-[ext_resource type="Script" path="res://scripts/FrontEnd/MainMenu.gd" id="1_4v18i"]
+[ext_resource type="Script" uid="uid://cb8ot0e6r5owy" path="res://scripts/FrontEnd/MainMenu.gd" id="1_4v18i"]
 [ext_resource type="Texture2D" uid="uid://d0bp0iicfa84d" path="res://art/test_textures/tuskalculator.png" id="2_x43jl"]
-[ext_resource type="Script" path="res://scripts/FrontEnd/StartButton.gd" id="3_jkqbw"]
+[ext_resource type="Script" uid="uid://bkpaab62dywb2" path="res://scripts/FrontEnd/StartButton.gd" id="3_jkqbw"]
 [ext_resource type="AudioStream" uid="uid://dwvp708y5myg5" path="res://audio/unb_main_menu_loop_markers_added.wav" id="4_bgocs"]
-[ext_resource type="Script" path="res://scripts/FrontEnd/Quit.gd" id="5_ook84"]
+[ext_resource type="Script" uid="uid://clv07nju07nle" path="res://scripts/FrontEnd/Quit.gd" id="5_ook84"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -20,9 +20,9 @@ layout_mode = 0
 offset_left = 128.0
 offset_right = 1032.0
 offset_bottom = 896.0
-theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0.920995, 0.920995, 0.920995, 1)
 theme_override_colors/icon_hover_color = Color(0.733992, 0.176282, 0.466528, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 100
 text = "START THE GAME"
 icon = ExtResource("2_x43jl")
@@ -39,6 +39,9 @@ offset_left = 136.0
 offset_top = 8.0
 offset_right = 392.0
 offset_bottom = 56.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/shadow_offset_x = 2
 theme_override_font_sizes/normal_font_size = 36
 text = "L O O M I N E S"
 scroll_active = false

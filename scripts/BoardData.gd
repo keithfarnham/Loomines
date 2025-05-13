@@ -39,6 +39,7 @@ class MatchingShapeData:
 	var toClear := false
 
 var textures = load("res://art/lumines_tiles.png")
+var matchOrbitScene = preload("res://scenes/MatchOrbitScene.tscn")
 
 func debug_print_cell_grid(matchingBlockCell := Vector2i(-1, -1), clearingLineXIndex = -1):
 	print_rich("[b]CellGrid print[/b]")
@@ -95,6 +96,14 @@ func debug_print_cell_grid(matchingBlockCell := Vector2i(-1, -1), clearingLineXI
 			string += ","
 		string += "\n"
 	print_rich(string)
+
+func grid_to_orbit_pos(gridPos):
+	var pixelPos = gridPos
+	pixelPos.x = (gridPos.x + GRID_SIDE_BUFFER)
+	pixelPos.y = (gridPos.y + GRID_TOP_BUFFER)
+	pixelPos *= GRID_CELL_PIXEL_COUNT
+	#fix half cell offset
+	return pixelPos
 
 func grid_to_pixel_pos(gridPos):
 	var pixelPos = gridPos
@@ -189,11 +198,21 @@ func matching_square_scan(gridIndex : Vector2i, color : CellData.CellColor):
 		if matchedDirIndexes == direction.size():
 			#all checkPos matched
 			matchDirKeys.append(MATCH_DIR_VALUES.find_key(direction))
+			
 	#handle things when we find matching directions from above
 	if matchDirKeys.is_empty():
 		return
+	
+	if CellGrid[gridIndex.x][gridIndex.y].state != CellData.CellState.MATCHED:
+		set_state(gridIndex, CellData.CellState.MATCHED)
 		
-	set_state(gridIndex, CellData.CellState.MATCHED)
+		#we setup the orbit animation if we haven't already cached off the match direction for this cell
+		print("[matching_square_scan] setting up matching orbit anim with gridIndex at " + str(gridIndex))
+		var orbitSpriteInstance = matchOrbitScene.instantiate() as AnimatedSprite2D
+		orbitSpriteInstance.global_position = Vector2(BoardData.grid_to_orbit_pos( gridIndex ))
+		orbitSpriteInstance.play("orbit")
+		add_child(orbitSpriteInstance)
+	
 	BoardData.CellGrid[gridIndex.x][gridIndex.y].sprite.texture = get_cell_color_atlas_texture(get_texture_atlas_index_for_level(BoardData.CellGrid[gridIndex.x][gridIndex.y].color) + 2)
 	if CellGrid[gridIndex.x][gridIndex.y].matchingShape == Vector2i(-1, -1):
 		CellGrid[gridIndex.x][gridIndex.y].matchingShape = gridIndex
