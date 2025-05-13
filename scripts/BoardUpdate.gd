@@ -27,7 +27,7 @@ func falling_blocks_update(delta):
 						BoardData.CellGrid[w][h].sprite.position.y += delta * 720
 				CellData.CellState.TO_FALL:
 					if distanceToFall == 0:
-					print("[falling_blocks_update] ERROR distance to fall shouldn't be 0, this cell probably shouldn't be set to fall")
+						print("[falling_blocks_update] ERROR distance to fall shouldn't be 0, this cell probably shouldn't be set to fall")
 					
 					if h + distanceToFall > BoardData.GRID_HEIGHT:
 						print("[falling_blocks_update] ERROR trying to make a block fall below the border, resetting distanceToFall to 0 in attempt to avoid problems")
@@ -37,7 +37,7 @@ func falling_blocks_update(delta):
 					BoardData.CellGrid[w][h + distanceToFall] = BoardData.CellGrid[w][h]
 					BoardData.CellGrid[w][h] = CellData.new()
 					print("[falling_blocks_update] Cell at " + str(Vector2i(w, h)) + " will fall to " + str(Vector2i(w, h + distanceToFall)))
-				Default:
+				_:
 					#if cell isn't currently falling, check if it should fall
 					BoardData.cell_fall_scan(Vector2i(w, h))
 
@@ -54,6 +54,26 @@ func matching_blocks_update(gridIndex : Vector2i):
 		BoardData.set_state(Vector2i(gridIndex.x, gridIndex.y), CellData.CellState.CLEARING)
 
 func clear_blocks_update(gridIndex : Vector2i):
+	#check if cells in matching shape didn't touch the clearing line and revert their texture
+	if gridIndex.x - 1 >= 0 \
+	and BoardData.CellGrid[gridIndex.x - 1][gridIndex.y].matchingShape == BoardData.CellGrid[gridIndex.x][gridIndex.y].matchingShape \
+	and BoardData.CellGrid[gridIndex.x - 1][gridIndex.y].clearLineTouched == false:
+		BoardData.set_state(Vector2i(gridIndex.x - 1, gridIndex.y), CellData.CellState.NONE)
+		BoardData.CellGrid[gridIndex.x - 1][gridIndex.y].matchingShape = Vector2i(-1,-1)
+		BoardData.CellGrid[gridIndex.x - 1][gridIndex.y].sprite.texture = BoardData.get_cell_color_atlas_texture(BoardData.get_texture_atlas_index_for_level(BoardData.CellGrid[gridIndex.x - 1][gridIndex.y].color))
+	if gridIndex.y - 1 >= 0 \
+	and BoardData.CellGrid[gridIndex.x][gridIndex.y - 1].matchingShape == BoardData.CellGrid[gridIndex.x][gridIndex.y].matchingShape \
+	and BoardData.CellGrid[gridIndex.x][gridIndex.y - 1].clearLineTouched == false:
+		BoardData.set_state(Vector2i(gridIndex.x, gridIndex.y - 1), CellData.CellState.NONE)
+		BoardData.CellGrid[gridIndex.x][gridIndex.y - 1].matchingShape = Vector2i(-1,-1)
+		BoardData.CellGrid[gridIndex.x][gridIndex.y - 1].sprite.texture = BoardData.get_cell_color_atlas_texture(BoardData.get_texture_atlas_index_for_level(BoardData.CellGrid[gridIndex.x][gridIndex.y - 1].color))
+	if gridIndex.x - 1 >= 0 and gridIndex.y - 1 >= 0 \
+	and BoardData.CellGrid[gridIndex.x - 1][gridIndex.y - 1].matchingShape == BoardData.CellGrid[gridIndex.x][gridIndex.y].matchingShape \
+	and BoardData.CellGrid[gridIndex.x - 1][gridIndex.y - 1].clearLineTouched == false:
+		BoardData.set_state(Vector2i(gridIndex.x - 1, gridIndex.y - 1), CellData.CellState.NONE)
+		BoardData.CellGrid[gridIndex.x - 1][gridIndex.y - 1].matchingShape = Vector2i(-1,-1)
+		BoardData.CellGrid[gridIndex.x - 1][gridIndex.y - 1].sprite.texture = BoardData.get_cell_color_atlas_texture(BoardData.get_texture_atlas_index_for_level(BoardData.CellGrid[gridIndex.x - 1][gridIndex.y - 1].color))
+	#clear the cell
 	BoardData.clear_cell(Vector2i(gridIndex.x, gridIndex.y))
 
 func matching_blocks_scan():

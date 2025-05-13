@@ -225,7 +225,13 @@ func matching_square_scan(gridIndex : Vector2i, color : CellData.CellColor):
 		for dir in MATCH_DIR_VALUES[matchDirKey]:
 			var checkPos = gridIndex + dir
 			if is_valid(checkPos):
-				set_state(checkPos, CellData.CellState.MATCHED)
+				if CellGrid[checkPos.x][checkPos.y].state != CellData.CellState.MATCHED:
+					print("[matching_square_scan] setting up matching orbit anim with gridIndex at " + str(gridIndex))
+					var orbitSpriteInstance = matchOrbitScene.instantiate() as AnimatedSprite2D
+					orbitSpriteInstance.global_position = Vector2(BoardData.grid_to_orbit_pos( gridIndex ))
+					orbitSpriteInstance.play("orbit")
+					add_child(orbitSpriteInstance)
+					set_state(checkPos, CellData.CellState.MATCHED)
 	
 	#first loop to get rightmost matching shape in gridIndex cached, then propogate
 	for matchDirKey in matchDirKeys:
